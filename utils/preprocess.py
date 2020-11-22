@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import glob
 import numpy as np
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 import h5py
 
 def preprocess(data_root_path  , img_dim  , outpath , num_samples = None , channels=1 , mode="train" , normalize=True):
@@ -24,11 +24,11 @@ def preprocess(data_root_path  , img_dim  , outpath , num_samples = None , chann
   else:
     limit = num_samples
 
-  for i in tqdm(range(limit)):
+  for i in tqdm(range(len(files))):
     if i == 0:
-      all_imgs = cv2.resize(cv2.imread(glob.glob(f"{files[105]}/*/*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor
+      all_imgs = cv2.resize(cv2.imread(glob.glob(f"{files[i]}/*/*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor
     else: 
-      new_img = cv2.resize(cv2.imread(glob.glob(f"{files[105]}/*/*.png")[0] ,  read) , (img_dim))[np.newaxis , : , :] / factor
+      new_img = cv2.resize(cv2.imread(glob.glob(f"{files[i]}/*/*.png")[0] ,  read) , (img_dim))[np.newaxis , : , :] / factor
       all_imgs = np.vstack((all_imgs , new_img) ) 
 
   os.makedirs(os.path.dirname(outpath), exist_ok=True)
