@@ -7,8 +7,8 @@ import numpy as np
 from tqdm import tqdm
 import h5py
 
-def preprocess(data_root_path  , img_dim  , outpath , channels=1 , mode="train" , normalize=True, num_samples=None):
-  files = glob.glob(f"{data_root_path}/Mass*/*/")
+def preprocess(data_root_path  , img_dim  , outpath , channels=1 , mode="train" , normalize=True, num_samples=None, view="CC"):
+  files = glob.glob(f"{data_root_path}/Mass*{view}/*/")
   if channels == 1:
     read = cv2.IMREAD_GRAYSCALE
   elif channels ==3:
