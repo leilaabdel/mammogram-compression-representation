@@ -7,7 +7,7 @@ import numpy as np
 from tqdm import tqdm
 import h5py
 
-def preprocess(data_root_path  , img_dim  , outpath , channels=1 , mode="train" , normalize=True):
+def preprocess(data_root_path  , img_dim  , outpath , channels=1 , mode="train" , normalize=True, num_samples=None):
   files = glob.glob(f"{data_root_path}/Mass*/*/")
   if channels == 1:
     read = cv2.IMREAD_GRAYSCALE
@@ -18,8 +18,13 @@ def preprocess(data_root_path  , img_dim  , outpath , channels=1 , mode="train" 
     factor = 255.
   else:
     factor = 1.
+  
+  if num_samples == None:
+    limit = len(files)
+  else: 
+    limit = num_samples
     
-  for i in tqdm(range(len(files))):
+  for i in tqdm(range(limit)):
     if i == 0:
       all_imgs = cv2.resize(cv2.imread(glob.glob(f"{files[i]}/*/*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor
     else: 
