@@ -34,7 +34,7 @@ def preprocess(data_root_path  , img_dim  , outpath , abnormality , label_file_p
 
   g_t_dataset = pd.read_csv(label_file_path)
   g_t_dataset = g_t_dataset.loc[g_t_dataset['image view'] == view]
-  g_t_dataset = g_t_dataset.loc[g_t_dataset['abnormality type'] == abnormality]
+  g_t_dataset = g_t_dataset.loc[g_t_dataset['abnormality type'] == abnormality].dropna()
   if channels == 1:
     read = cv2.IMREAD_GRAYSCALE
   elif channels ==3:
@@ -53,7 +53,7 @@ def preprocess(data_root_path  , img_dim  , outpath , abnormality , label_file_p
   for i in tqdm(range(limit)):
     if i == 0:
       all_imgs = cv2.resize(cv2.imread(glob.glob(f"{data_root_path}/{g_t_dataset['image file path'][  g_t_dataset.index[i]]}*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor
-      all_breast_density , all_side , all_mass_shape , all_mass_margins , all_pathology , all_roi , all_roi_mask = get_clinical_helper(i , g_t_dataset , read , g_t_dataset['image file path'][i] , data_root_path, img_dim)
+      all_breast_density , all_side , all_mass_shape , all_mass_margins , all_pathology , all_roi , all_roi_mask = get_clinical_helper(i , g_t_dataset , read , g_t_dataset['image file path'][g_t_dataset.index[i]] , data_root_path, img_dim)
 
     else:
       all_imgs = np.vstack((all_imgs , cv2.resize(cv2.imread(glob.glob(f"{data_root_path}/{g_t_dataset['image file path'][ g_t_dataset.index[i]]}*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor) )
