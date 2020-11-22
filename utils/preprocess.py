@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import glob
 import numpy as np
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import h5py
 
 def preprocess(data_root_path  , img_dim  , outpath , num_samples = None , channels=1 , mode="train" , normalize=True):
