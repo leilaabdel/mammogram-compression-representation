@@ -18,12 +18,10 @@ def get_clinical_helper(i , g_t_dataset , read, files , data_root_path, img_dim)
    mass_margins =  np.array(index_row['mass margins'], dtype=str)[np.newaxis , : ]
    pathology =  np.array(index_row['pathology'], dtype=str)[np.newaxis , : ]
    subtlety = np.array(index_row['subtlety'] , dtype=str)[np.newaxis , : ]
-   path = f"{data_root_path}/{index_row['ROI mask file path'][  g_t_dataset.index[i]]}"
-   roi_paths =  glob.glob(f"{path[:-1]}*.png")
-
-   roi = cv2.imread(roi_paths[0] , read)
-   roi_mask = cv2.imread(roi_paths[1], read)
-
+   path_roi = f"{data_root_path}/{index_row['cropped image file path'][  g_t_dataset.index[i]]}"
+   path_roi_mask =  f"{data_root_path}/{index_row['ROI mask file path'][  g_t_dataset.index[i]]}"
+   roi = cv2.imread(path_roi, read)
+   roi_mask = cv2.imread(path_roi_mask.replace("\n", ""), read)
    roi = cv2.resize(roi , img_dim)[np.newaxis , : , :] / 255.
    roi_mask = cv2.resize(roi_mask , img_dim)[np.newaxis , : , :] / 255.
    return breast_density , side , mass_shape , mass_margins , pathology , roi , roi_mask
@@ -52,11 +50,11 @@ def preprocess(data_root_path  , img_dim  , outpath , abnormality , label_file_p
 
   for i in tqdm(range(limit)):
     if i == 0:
-      all_imgs = cv2.resize(cv2.imread(glob.glob(f"{data_root_path}/{g_t_dataset['image file path'][  g_t_dataset.index[i]]}*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor
+      all_imgs = cv2.resize(cv2.imread(f"{data_root_path}/{g_t_dataset['image file path'][g_t_dataset.index[i]]}" , read) , img_dim)[np.newaxis , : , :] / factor
       all_breast_density , all_side , all_mass_shape , all_mass_margins , all_pathology , all_roi , all_roi_mask = get_clinical_helper(i , g_t_dataset , read , g_t_dataset['image file path'][g_t_dataset.index[i]] , data_root_path, img_dim)
 
     else:
-      all_imgs = np.vstack((all_imgs , cv2.resize(cv2.imread(glob.glob(f"{data_root_path}/{g_t_dataset['image file path'][ g_t_dataset.index[i]]}*.png")[0] , read) , (img_dim))[np.newaxis , : , :] / factor) )
+      all_imgs = np.vstack((all_imgs , cv2.resize(cv2.imread(f"{data_root_path}/{g_t_dataset['image file path'][g_t_dataset.index[i]]}", read) , img_dim)[np.newaxis , : , :] / factor) )
       clinical_tuple =  get_clinical_helper(i , g_t_dataset , read , g_t_dataset['image file path'][  g_t_dataset.index[i]] , data_root_path , img_dim)
       all_breast_density = np.vstack((all_breast_density , clinical_tuple[0]))
       all_side = np.vstack((all_side , clinical_tuple[1]))
