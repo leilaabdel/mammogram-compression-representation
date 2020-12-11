@@ -1,4 +1,4 @@
-# Image Compression through Representation
+# Mammography Image Compression through Representation
 
 <img src="./imgs/reconstructions.png" alt="alt text" width="700">
 
